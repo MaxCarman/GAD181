@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 5951317695402329159}
   - component: {fileID: 7683702616840836561}
   m_Layer: 0
-  m_Name: Lv6Orb
+  m_Name: Orb6
   m_TagString: Orb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,13 +203,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemOwner: 0
-  referenceOwnerScript: {fileID: 0}
   itemActive: 0
-  timeAlive: 0
+  timerExisted: 0
+  orbValue: 6
   referenceNextEvolution: {fileID: 3164340700334586410, guid: 236c16185e1cf2245b32fc778ad59484, type: 3}
-  referenceOrbText: {fileID: 805249541380625460}
-  mergeValue: 6
   powerupType: 
+  referenceOwnerScript: {fileID: 0}
+  referenceOrbText: {fileID: 805249541380625460}
+  referenceRigidBody: {fileID: 5951317695402329159}
+  referenceCollider: {fileID: 7683702616840836561}
 --- !u!50 &5951317695402329159
 Rigidbody2D:
   serializedVersion: 4

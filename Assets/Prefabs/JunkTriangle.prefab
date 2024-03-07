@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5075995505109137006}
   - component: {fileID: 3619700599663671730}
-  - component: {fileID: 4502211625188204857}
   - component: {fileID: 7077967019135282524}
+  - component: {fileID: 4502211625188204857}
   - component: {fileID: 3849488393587146033}
   m_Layer: 0
   m_Name: JunkTriangle
@@ -87,6 +87,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7077967019135282524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5901993779367735369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d835abe5b2963c4eba95415fa3e61c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemOwner: 0
+  itemActive: 0
+  timerExisted: 0
+  orbValue: 0
+  referenceNextEvolution: {fileID: 0}
+  powerupType: 
+  referenceOwnerScript: {fileID: 0}
+  referenceOrbText: {fileID: 0}
+  referenceRigidBody: {fileID: 4502211625188204857}
+  referenceCollider: {fileID: 3849488393587146033}
 --- !u!50 &4502211625188204857
 Rigidbody2D:
   serializedVersion: 4
@@ -114,25 +136,6 @@ Rigidbody2D:
   m_SleepingMode: 2
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &7077967019135282524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5901993779367735369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d835abe5b2963c4eba95415fa3e61c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemOwner: 0
-  referenceOwnerScript: {fileID: 0}
-  itemActive: 0
-  timeAlive: 0
-  referenceNextEvolution: {fileID: 0}
-  mergeValue: 0
-  powerupType: 
 --- !u!60 &3849488393587146033
 PolygonCollider2D:
   m_ObjectHideFlags: 0

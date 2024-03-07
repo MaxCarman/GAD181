@@ -332,12 +332,12 @@ GameObject:
   - component: {fileID: 8170247270112822162}
   - component: {fileID: 4238653888946084512}
   m_Layer: 0
-  m_Name: OutOfGameLine
+  m_Name: OutOfGameEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8170247270112822162
 Transform:
   m_ObjectHideFlags: 0
@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 5935576031987704380}
   - component: {fileID: 3617699603245257035}
   m_Layer: 0
-  m_Name: Cooldown
+  m_Name: Cooldownbar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -585,7 +585,7 @@ GameObject:
   - component: {fileID: 4221238898125488491}
   - component: {fileID: 4463304989086227195}
   m_Layer: 5
-  m_Name: IDText
+  m_Name: NameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -757,18 +757,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerID: 0
-  playerScore: 0
-  playerIsAlive: 1
-  playerHeldItem: {fileID: 6168553872125743738, guid: ca14995aaf2f3f5499ba3898877e1272, type: 3}
+  playerName: 
   playerColor: {r: 1, g: 1, b: 1, a: 1}
-  dropTimer: 9000
+  playerIsAlive: 1
+  playerScore: 0
+  playerHeldItem: {fileID: 6168553872125743738, guid: ca14995aaf2f3f5499ba3898877e1272, type: 3}
+  playerUIPos: 0
   playerControlLeft: 0
   playerControlRight: 0
   playerControlDrop: 0
   referenceMarker: {fileID: 6986703943763733954}
-  referenceCooldown: {fileID: 5413421072408524127}
+  referenceCooldownBar: {fileID: 5413421072408524127}
   referenceDropLine: {fileID: 2080817755605614468}
-  referenceOutOfGameLine: {fileID: 4041572515534084402}
+  referenceOutOfGameEffect: {fileID: 4041572515534084402}
   referenceGameManager: {fileID: 0}
   referenceScoreText: {fileID: 2706536863838537952}
-  referenceIDText: {fileID: 4463304989086227195}
+  referenceNameText: {fileID: 4463304989086227195}
