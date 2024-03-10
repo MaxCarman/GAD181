@@ -665,8 +665,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 4
-  m_fontSizeBase: 4
+  m_fontSize: 2
+  m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -719,7 +719,7 @@ GameObject:
   - component: {fileID: 1078435476302216004}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -761,11 +761,12 @@ MonoBehaviour:
   playerColor: {r: 1, g: 1, b: 1, a: 1}
   playerIsAlive: 1
   playerScore: 0
-  playerHeldItem: {fileID: 6168553872125743738, guid: ca14995aaf2f3f5499ba3898877e1272, type: 3}
-  playerUIPos: 0
+  playerHeldItem: {fileID: 0}
+  playerStartingItem: {fileID: 6168553872125743738, guid: ca14995aaf2f3f5499ba3898877e1272, type: 3}
   playerControlLeft: 0
   playerControlRight: 0
   playerControlDrop: 0
+  referenceHeldItem: {fileID: 0}
   referenceMarker: {fileID: 6986703943763733954}
   referenceCooldownBar: {fileID: 5413421072408524127}
   referenceDropLine: {fileID: 2080817755605614468}

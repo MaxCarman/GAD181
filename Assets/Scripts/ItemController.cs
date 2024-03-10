@@ -26,6 +26,7 @@ public class ItemController : MonoBehaviour
     //Self-Reference vars
     public PlayerController referenceOwnerScript;              //A reference to this script.
     [SerializeField] private TextMeshProUGUI referenceOrbText; //A reference to this object's value text. Only exists for orbs.
+    public GameObject referenceGameManager;                   //A reference to the GameManager object.
 
     [SerializeField] private Rigidbody2D referenceRigidBody; //A reference to this object's rigid body.
     [SerializeField] private Collider2D referenceCollider;   //A reference to this object's collider.
@@ -51,6 +52,12 @@ public class ItemController : MonoBehaviour
             {
                 timerOutOfBounds += 1;
             }
+
+            //If the item is below the map, delete it.
+            if(transform.position.y <= -10)
+            {
+                Destroy(gameObject);
+            }
         } else
         {
             referenceRigidBody.Sleep();
@@ -58,7 +65,7 @@ public class ItemController : MonoBehaviour
         }
 
         //If out of bounds for more than x seconds, set the player to be out. Only check for orbs.
-        if(timerOutOfBounds > 900 && gameObject.tag == "Orb" && referenceOwnerScript.playerIsAlive == true)
+        if(timerOutOfBounds > 900 && gameObject.tag == "Orb" && referenceOwnerScript.playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             referenceOwnerScript.playerIsAlive = false;
         }
@@ -94,7 +101,7 @@ public class ItemController : MonoBehaviour
         ItemController referenceCollisionScript = collision.gameObject.GetComponent<ItemController>();
 
         //Orb merging logic
-        if (gameObject.tag == "Orb")
+        if (gameObject.tag == "Orb" && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             //Check if the same tag, check if both have the same owner and check if older than the other (to make it only happen once). Check if its been alive for a bit to avoid instant merging.
             if (collision.gameObject.tag == "Orb" && timerExisted > referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue && orbValue < 7)
@@ -105,13 +112,15 @@ public class ItemController : MonoBehaviour
                 renderer.material.SetColor("_Color", GetComponent<Renderer>().material.color);
 
                 //Add points to the player based on the merge value.
-                referenceOwnerScript.playerScore += orbValue;
+                referenceOwnerScript.playerScore += orbValue * 2;
 
                 //Carry over this orbs's values onto the next object.
                 ItemController referenceItemControlScript = referenceNewItem.GetComponent<ItemController>();
                 referenceItemControlScript.itemOwner = this.itemOwner;
                 referenceItemControlScript.referenceOwnerScript = this.referenceOwnerScript;
                 referenceItemControlScript.itemActive = true;
+                referenceItemControlScript.referenceGameManager = this.referenceGameManager;
+                referenceItemControlScript.timerExisted = timerExisted;
 
                 //Destroy both now that the new one is made.
                 Destroy(collision.gameObject);
@@ -127,7 +136,7 @@ public class ItemController : MonoBehaviour
         }
 
         //Powerup functionality
-        if(gameObject.tag == "Powerup")
+        if(gameObject.tag == "Powerup" && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             //Paint Powerup: Check if the powerup tag and touching, and that item is not being held by another player.
             if (powerupType == "Eraser" && gameObject.tag == "Powerup" && collision.gameObject.tag == "Orb" && itemActive == true && referenceCollisionScript.itemActive == true)

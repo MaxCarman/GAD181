@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public bool playerIsAlive;        //If the player is alive and still in the game.
     public int playerScore;           //The player's score.
     public GameObject playerHeldItem; //The player's currently held item.
+    public GameObject playerStartingItem; //The item the player starts with.
     private float playerUIPos;         //The player's UI x position.
 
     private int dropCooldown = 1 * 600; //The cooldown before another item can be dropped.
@@ -26,13 +27,13 @@ public class PlayerController : MonoBehaviour
     public KeyCode playerControlDrop;  //The player's keybind to drop.
 
     //Self-Reference Vars
-    private GameObject referenceHeldItem; //A reference to the player's held item above them.
+    public GameObject referenceHeldItem; //A reference to the player's held item above them.
 
-    [SerializeField] private GameObject referenceMarker;          //A reference to the player's triangluar marker piece.
-    [SerializeField] private GameObject referenceCooldownBar;     //A reference to the player's visual cooldown piece.
-    [SerializeField] private GameObject referenceDropLine;        //A reference to the player's drop line.
-    [SerializeField] private GameObject referenceOutOfGameEffect; //A reference to the player's out of game effect.
-    [SerializeField] public GameObject referenceGameManager;      //A reference to the GameManager object.
+    public GameObject referenceMarker;          //A reference to the player's triangluar marker piece.
+    public GameObject referenceCooldownBar;     //A reference to the player's visual cooldown piece.
+    public GameObject referenceDropLine;        //A reference to the player's drop line.
+    public GameObject referenceOutOfGameEffect; //A reference to the player's out of game effect.
+    public GameObject referenceGameManager;      //A reference to the GameManager object.
 
     [SerializeField] private TextMeshProUGUI referenceScoreText; //A reference to the player's score UI.
     [SerializeField] private TextMeshProUGUI referenceNameText;  //A reference to the player's name UI.
@@ -57,9 +58,8 @@ public class PlayerController : MonoBehaviour
         //Save the starting x position for player UI elements.
         playerUIPos = transform.position.x;
 
-        //Load in the first orb above the marker and set its colour.
-        referenceHeldItem = Instantiate(playerHeldItem, new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), Quaternion.identity) as GameObject;
-        referenceHeldItem.GetComponent<Renderer>().material.SetColor("_Color", playerColor);
+        //Get the first item
+        CreateItem(false);
 
     }
 
@@ -79,8 +79,8 @@ public class PlayerController : MonoBehaviour
         referenceNameText.transform.position = new Vector3(playerUIPos, referenceNameText.transform.position.y, referenceNameText.transform.position.z);
         referenceScoreText.transform.position = new Vector3(playerUIPos, referenceScoreText.transform.position.y, referenceScoreText.transform.position.z);
 
-        //Only let players control or drop items if they are still alive.
-        if (playerIsAlive == true)
+        //Only let players control or drop items if they are still alive and the game has not ended.
+        if (playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             //Player movement controls, allow movement if held and not too close to the edges.
             if (Input.GetKey(playerControlLeft) & transform.position.x > -6.5)
@@ -96,6 +96,7 @@ public class PlayerController : MonoBehaviour
             if ((Input.GetKeyDown(playerControlDrop) && dropCooldown == 0) || (dropTimer == 0))
             {
                 DropItem();
+                CreateItem(true);
             }
 
             //Reduce the cooldown if it is above 1.
@@ -123,23 +124,37 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //Function for dropping the held item and grabbing a new one from the queue.
+    //Function for dropping the held item.
     void DropItem()
     {
-        //Set the held item to active so it drops, set its owner to this player's ID and remove the reference.
+        //Set the held item to active so it drops, set it to active
         ItemController referenceItemController = referenceHeldItem.GetComponent<ItemController>();
         referenceItemController.itemActive = true;
-        referenceItemController.itemOwner = playerID;
-        referenceItemController.referenceOwnerScript = this.GetComponent<PlayerController>();
         referenceHeldItem = null;
+    }
 
+    //Function for creating new items. If true, use the next queue item, if false, use the item set in the editor.
+
+    void CreateItem(bool queueItem)
+    {
         //Receive the most recent queue item and add it as the next held item.
         GameManager referenceGameManagerScript = referenceGameManager.GetComponent<GameManager>();
-        playerHeldItem = referenceGameManagerScript.gameQueue[0];
-        referenceGameManagerScript.gameQueue.RemoveAt(0);
+        if(queueItem == true)
+        {
+            playerHeldItem = referenceGameManagerScript.gameQueue[0];
+            referenceGameManagerScript.gameQueue.RemoveAt(0);
+        }
+        if(queueItem == false)
+        {
+            playerHeldItem = playerStartingItem;
+        }
 
-        //Instantiate the new held item.
+        //Instantiate the new held item, and assign its owner/references.
         referenceHeldItem = Instantiate(playerHeldItem, new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), Quaternion.identity) as GameObject;
+        ItemController referenceItemController = referenceHeldItem.GetComponent<ItemController>();
+        referenceItemController.itemOwner = playerID;
+        referenceItemController.referenceOwnerScript = this.GetComponent<PlayerController>();
+        referenceItemController.referenceGameManager = referenceGameManager;
 
         //Change colour if it is a orb/powerup, but not junk.
         if (referenceHeldItem.CompareTag("Orb") || referenceHeldItem.CompareTag("Powerup"))
@@ -150,12 +165,19 @@ public class PlayerController : MonoBehaviour
         //If the held item is a junk item, randomise its scale and rotation.
         if (referenceHeldItem.CompareTag("Junk"))
         {
-            referenceHeldItem.transform.localScale = new Vector3(Random.Range(0.5f,1.5f),Random.Range(0.5f, 1.5f),1);
+            referenceHeldItem.transform.localScale = new Vector3(Random.Range(0.5f, 1.5f), Random.Range(0.5f, 1.5f), 1);
             referenceHeldItem.transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 360));
         }
 
         //Reset the drop cooldown and timer.
         dropCooldown = 1 * 600;
         dropTimer = 15 * 600;
+    }
+
+
+    //If hidden on game end, also hide the held item.
+    private void OnDisable()
+    {
+        Destroy(referenceHeldItem);
     }
 }
