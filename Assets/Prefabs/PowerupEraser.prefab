@@ -107,6 +107,7 @@ MonoBehaviour:
   powerupType: Eraser
   referenceOwnerScript: {fileID: 0}
   referenceOrbText: {fileID: 0}
+  referenceGameManager: {fileID: 0}
   referenceRigidBody: {fileID: 8632857988177866893}
   referenceCollider: {fileID: 2638016084819089258}
 --- !u!50 &8632857988177866893
@@ -143,7 +144,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6681885523050465237}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:

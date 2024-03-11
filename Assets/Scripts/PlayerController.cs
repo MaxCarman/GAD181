@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviour
     public GameObject playerStartingItem; //The item the player starts with.
     private float playerUIPos;         //The player's UI x position.
 
-    private int dropCooldown = 1 * 600; //The cooldown before another item can be dropped.
-    private int dropTimer = 15 * 600;   //The time left until the item will automatically drop.
+    private float dropCooldown = 0.5f * 120; //The cooldown before another item can be dropped.
+    private float dropTimer = 8 * 120;   //The time left until the item will automatically drop.
     
     public KeyCode playerControlLeft;  //The player's keybind to move left.
     public KeyCode playerControlRight; //The player's keybind to move right.
@@ -33,8 +33,9 @@ public class PlayerController : MonoBehaviour
     public GameObject referenceCooldownBar;     //A reference to the player's visual cooldown piece.
     public GameObject referenceDropLine;        //A reference to the player's drop line.
     public GameObject referenceOutOfGameEffect; //A reference to the player's out of game effect.
-    public GameObject referenceGameManager;      //A reference to the GameManager object.
+    public GameObject referenceGameManager;     //A reference to the GameManager object.
 
+    [SerializeField] private Canvas referenceCanvas;      //A reference to this player's canvas.
     [SerializeField] private TextMeshProUGUI referenceScoreText; //A reference to the player's score UI.
     [SerializeField] private TextMeshProUGUI referenceNameText;  //A reference to the player's name UI.
 
@@ -47,10 +48,9 @@ public class PlayerController : MonoBehaviour
         referenceDropLine.GetComponent<Renderer>().material.color = playerColor;
         referenceOutOfGameEffect.GetComponent<Renderer>().material.color = playerColor;
 
+        referenceNameText.text = playerName;
         referenceScoreText.color = playerColor;
         referenceNameText.color = playerColor;
-
-        referenceNameText.text = playerName;
 
         //Disable the out of game effect so it is not visible.
         referenceOutOfGameEffect.SetActive(false);
@@ -61,23 +61,22 @@ public class PlayerController : MonoBehaviour
         //Get the first item
         CreateItem(false);
 
+        //Unchild UI so it dosent move with parent marker.
+        referenceCanvas.transform.SetParent(null);
+
+        referenceScoreText.transform.position = new Vector3(playerUIPos, -3.7f, 0);
+        referenceNameText.transform.position = new Vector3(playerUIPos, -4.2f, 0);
+
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Update the score text.
         referenceScoreText.text = playerScore.ToString() + ".P";
 
         //Update the cooldown bar visuals.
-        referenceCooldownBar.transform.localScale = new Vector3(dropTimer * 0.00015f, referenceCooldownBar.transform.localScale.y, referenceCooldownBar.transform.localScale.z);
-
-        //Update the held item's position.
-        referenceHeldItem.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
-
-        //Prevent movement of player's UI components.
-        referenceNameText.transform.position = new Vector3(playerUIPos, referenceNameText.transform.position.y, referenceNameText.transform.position.z);
-        referenceScoreText.transform.position = new Vector3(playerUIPos, referenceScoreText.transform.position.y, referenceScoreText.transform.position.z);
+        referenceCooldownBar.transform.localScale = new Vector3(dropTimer * 0.0015f, referenceCooldownBar.transform.localScale.y, referenceCooldownBar.transform.localScale.z);
 
         //Only let players control or drop items if they are still alive and the game has not ended.
         if (playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
@@ -85,15 +84,15 @@ public class PlayerController : MonoBehaviour
             //Player movement controls, allow movement if held and not too close to the edges.
             if (Input.GetKey(playerControlLeft) & transform.position.x > -6.5)
             {
-                transform.position = new Vector3((float)(transform.position.x - 0.005), transform.position.y, transform.position.z);
+                transform.position = new Vector3((float)(transform.position.x - 0.05), transform.position.y, transform.position.z);
             }
             if (Input.GetKey(playerControlRight) & transform.position.x < 6.5)
             {
-                transform.position = new Vector3((float)(transform.position.x + 0.005), transform.position.y, transform.position.z);
+                transform.position = new Vector3((float)(transform.position.x + 0.05), transform.position.y, transform.position.z);
             }
 
             //Player dropping controls: Drop the item if pressed and it is off cooldown. OR if the drop timer reaches 0, forcing a drop.
-            if ((Input.GetKeyDown(playerControlDrop) && dropCooldown == 0) || (dropTimer == 0))
+            if ((Input.GetKey(playerControlDrop) && dropCooldown == 0) || (dropTimer == 0))
             {
                 DropItem();
                 CreateItem(true);
@@ -130,6 +129,7 @@ public class PlayerController : MonoBehaviour
         //Set the held item to active so it drops, set it to active
         ItemController referenceItemController = referenceHeldItem.GetComponent<ItemController>();
         referenceItemController.itemActive = true;
+        referenceHeldItem.transform.SetParent(null);
         referenceHeldItem = null;
     }
 
@@ -155,6 +155,7 @@ public class PlayerController : MonoBehaviour
         referenceItemController.itemOwner = playerID;
         referenceItemController.referenceOwnerScript = this.GetComponent<PlayerController>();
         referenceItemController.referenceGameManager = referenceGameManager;
+        referenceHeldItem.transform.SetParent(gameObject.transform);
 
         //Change colour if it is a orb/powerup, but not junk.
         if (referenceHeldItem.CompareTag("Orb") || referenceHeldItem.CompareTag("Powerup"))
@@ -170,8 +171,8 @@ public class PlayerController : MonoBehaviour
         }
 
         //Reset the drop cooldown and timer.
-        dropCooldown = 1 * 600;
-        dropTimer = 15 * 600;
+        dropCooldown = 1 * 120;
+        dropTimer = 8 * 120;
     }
 
 

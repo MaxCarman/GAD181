@@ -4,11 +4,8 @@ using UnityEngine;
 using System.Linq;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.Search;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
-using UnityEditor.Animations;
-using System.Security.Cryptography;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +35,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Canvas referenceCanvasPostgame; //A reference to the postgame canvas.
     [SerializeField] private TextMeshProUGUI referenceWinnerText; //A reference to the postgame winner text.
 
+    [SerializeField] private TextMeshProUGUI referenceFPSText; //A reference to the fps text.
+
     //Map related vars
     [SerializeField] private List<GameObject> referenceMapObjects; //A list of parent objects for each map.
     [SerializeField] private List<string> referenceMapNames; //A list of map names.
@@ -54,33 +53,33 @@ public class GameManager : MonoBehaviour
     private List<GameObject> referencePlayers; //A list of all the current player control scripts. Used to determine game end conditions and winners.
 
     //Misc vars
-    int launchCooldown = 0; //Used for title screen launching.
+    float launchCooldown = 0; //Used for title screen launching.
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Application.targetFrameRate = 120;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Only update if game in pre-game.
-        if(gameState == 0)
+        if (gameState == 0)
         {
             //Show specific canvases
             referenceCanvasPregame.enabled = true;
             referenceCanvasPostgame.enabled = false;
 
             //Update player count text
-            referencePlayerCountText.text = "Player count: " + settingPlayerCount;
+            referencePlayerCountText.text = "Player Count: " + settingPlayerCount;
 
             //Update map text
             referenceMapText.text = "Map Type: " + referenceMapNames[settingMap];
 
             //Launch orbs around!
             launchCooldown += 1;
-            if(launchCooldown >= 500)
+            if(launchCooldown >= 0.5*120)
             {
                 launchCooldown = 0;
                 foreach (GameObject i in GameObject.FindGameObjectsWithTag("Orb"))
@@ -89,7 +88,7 @@ public class GameManager : MonoBehaviour
                     //i.GetComponent<Rigidbody2D>().mass = 3;
                     if(i.GetComponent<Rigidbody2D>().velocity.x < 1 && i.GetComponent<Rigidbody2D>().velocity.y < 1)
                     {
-                        i.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(500, -501) * i.GetComponent<Rigidbody2D>().mass, Random.Range(500, -501) * i.GetComponent<Rigidbody2D>().mass));
+                        i.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(1000, -1001) * i.GetComponent<Rigidbody2D>().mass, Random.Range(1000, -1001) * i.GetComponent<Rigidbody2D>().mass));
                     }
                 }
             }
@@ -302,6 +301,10 @@ public class GameManager : MonoBehaviour
         {
             Destroy(i);
         }
+        foreach (GameObject i in GameObject.FindGameObjectsWithTag("PlayerUI"))
+        {
+            Destroy(i);
+        }
 
         //Clear the previous queue.
         gameQueue.Clear();
@@ -366,7 +369,12 @@ public class GameManager : MonoBehaviour
     //OnClick event for the exit button. If in-game, go back to the title screen, if in the pre-game, then send them back to the gems select screen.
     public void ClickExit()
     {
-        if(gameState == 1 || gameState == 2)
+        if (gameState == 0)
+        {
+            Application.Quit();
+        }
+
+        if (gameState == 1 || gameState == 2)
         {
             gameState = 0;
 
@@ -375,10 +383,10 @@ public class GameManager : MonoBehaviour
             {
                 Destroy(i);
             }
-        }
-        if (gameState == 0)
-        {
-            //SEND TO GAME SELECT
+            foreach (GameObject i in GameObject.FindGameObjectsWithTag("PlayerUI"))
+            {
+                Destroy(i);
+            }
         }
     }
 

@@ -107,6 +107,7 @@ MonoBehaviour:
   powerupType: Paint
   referenceOwnerScript: {fileID: 0}
   referenceOrbText: {fileID: 0}
+  referenceGameManager: {fileID: 0}
   referenceRigidBody: {fileID: 8818876365848232347}
   referenceCollider: {fileID: 5855803832767806487}
 --- !u!50 &8818876365848232347
@@ -143,7 +144,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7203073474633859426}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:

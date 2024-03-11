@@ -38,7 +38,7 @@ public class ItemController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //If the item is active, wake up physics/colliders and increase its timer. Otherwise, disable physics and dont check timers.
         if (itemActive == true)
@@ -65,7 +65,7 @@ public class ItemController : MonoBehaviour
         }
 
         //If out of bounds for more than x seconds, set the player to be out. Only check for orbs.
-        if(timerOutOfBounds > 900 && gameObject.tag == "Orb" && referenceOwnerScript.playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
+        if(timerOutOfBounds > 1.2 * 120 && gameObject.tag == "Orb" && referenceOwnerScript.playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             referenceOwnerScript.playerIsAlive = false;
         }
@@ -75,7 +75,7 @@ public class ItemController : MonoBehaviour
         {
             powerupDecay += 1;
             //If decayed for x seconds, destroy this powerup.
-            if (powerupDecay >= 350)
+            if (powerupDecay >= 0.5 * 120)
             {
                 Destroy(gameObject);
             }
