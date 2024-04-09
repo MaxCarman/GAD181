@@ -341,7 +341,7 @@ public class GameManager : MonoBehaviour
     public void ClickPlayerMapPlus()
     {
         settingMap += 1;
-        settingMap = Mathf.Clamp(settingMap, 0, 4);
+        settingMap = Mathf.Clamp(settingMap, 0, referenceMapObjects.Count-1);
         UpdateMap();
     }
 
@@ -349,7 +349,7 @@ public class GameManager : MonoBehaviour
     public void ClickPlayerMapMinus()
     {
         settingMap -= 1;
-        settingMap = Mathf.Clamp(settingMap, 0, 4);
+        settingMap = Mathf.Clamp(settingMap, 0, referenceMapObjects.Count-1);
         UpdateMap();
     }
 
@@ -389,6 +389,23 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    //OnClick event for the fullscreen button. Toggles between windows and borderless window.
+    public void ClickFullscreen()
+    {
+        if (Screen.fullScreenMode == FullScreenMode.Windowed)
+        {
+            Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+            return;
+        }
+        
+        if(Screen.fullScreenMode == FullScreenMode.FullScreenWindow)
+        {
+            Screen.fullScreenMode = FullScreenMode.Windowed;
+            return;
+        }
+    }
+
 
     //OnClick event for the tutorial button. Toggles based on visibility.
     public void ClickTutorial()
