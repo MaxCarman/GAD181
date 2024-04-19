@@ -22,6 +22,7 @@ public class ItemController : MonoBehaviour
     public string powerupType;               //The type of powerup this item is, is either Eraser or Paint.
     private int powerupDecay = 0;            //How many thics this item has existed for after touching an orb.
     private bool powerupHasTouched = false;  //If this powerup has touched an orb in its life.
+    public Sprite paintStyle; //The stored style of the player, which is used for the paint powerup.
 
     //Self-Reference vars
     public PlayerController referenceOwnerScript;              //A reference to this script.
@@ -107,10 +108,11 @@ public class ItemController : MonoBehaviour
             //Check if the same tag, check if both have the same owner and check if older than the other (to make it only happen once). Check if its been alive for a bit to avoid instant merging.
             if (collision.gameObject.tag == "Orb" && timerExisted > referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue && orbValue < 7)
             {
-                //Create the new object and set its colour.
+                //Create the new object and set its colour/style
                 var referenceNewItem = Instantiate(referenceNextEvolution, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z), Quaternion.identity) as GameObject;
-                var renderer = referenceNewItem.GetComponent<Renderer>();
-                renderer.material.SetColor("_Color", GetComponent<Renderer>().material.color);
+                referenceNewItem.GetComponent<Renderer>().material.SetColor("_Color", GetComponent<Renderer>().material.color);
+                referenceNewItem.GetComponent<SpriteRenderer>().sprite = this.GetComponent<SpriteRenderer>().sprite;
+
 
                 //Add points to the player based on the merge value.
                 referenceOwnerScript.playerScore += orbValue * 2;
@@ -151,7 +153,7 @@ public class ItemController : MonoBehaviour
         //Powerup functionality
         if(gameObject.tag == "Powerup" && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
-            //Paint Powerup: Check if the powerup tag and touching, and that item is not being held by another player.
+            //Erase Powerup: Check if the powerup tag and touching, and that item is not being held by another player.
             if (powerupType == "Eraser" && gameObject.tag == "Powerup" && collision.gameObject.tag == "Orb" && itemActive == true && referenceCollisionScript.itemActive == true)
             {
                 powerupHasTouched = true;
@@ -193,8 +195,9 @@ public class ItemController : MonoBehaviour
                     referencePaintAudio.GetComponent<audioController>().audioSource.pitch = 0.5f +(float)referenceCollisionScript.orbValue * 0.2f;
                 }
 
-                //Set the orb's new colour and owner ID.
+                //Set the orb's new colour/style and owner ID.
                 referenceCollisionScript.itemOwner = this.itemOwner;
+                collision.gameObject.GetComponent<SpriteRenderer>().sprite = this.paintStyle;
                 collision.gameObject.GetComponent<Renderer>().material.SetColor("_Color", this.GetComponent<Renderer>().material.color);
             }
         }

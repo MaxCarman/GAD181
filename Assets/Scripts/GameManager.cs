@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     //Player related vars
     [SerializeField] private List<string> playerNames; //A list of the player names.
     [SerializeField] private List<Color> playerColors; //A list of the player colours.
+    [SerializeField] private List<Sprite> playerStyles; //A list of the player styles.
 
     [SerializeField] private List<KeyCode> playerControlsLeft;  //A list of the player left buttons
     [SerializeField] private List<KeyCode> playerControlsRight; //A list of the player right buttons.
@@ -65,7 +66,8 @@ public class GameManager : MonoBehaviour
 
     //Perm Audio related vars
     [SerializeField] AudioSource referenceWinAudio; //Areference to the  win audio, which is called when a player wins.
-    [SerializeField] AudioSource referenceClickAudio; //Areference to the UI click audio, which is called when a UI button is pressed.
+    [SerializeField] AudioSource referenceClickAudio; //A reference to the UI click audio, which is called when a UI button is pressed.
+    [SerializeField] AudioSource referenceBackgroundAudio; //A reference to the background audio.
 
     //Misc vars
     float launchCooldown = 0; //Used for title screen launching.
@@ -236,6 +238,7 @@ public class GameManager : MonoBehaviour
             PlayerController referencePlayerControl = referencePlayer.GetComponent<PlayerController>();
             referencePlayerControl.playerID = i + 1;
             referencePlayerControl.playerColor = playerColors[i];
+            referencePlayerControl.playerStyle = playerStyles[i];
             referencePlayerControl.playerControlLeft = playerControlsLeft[i];
             referencePlayerControl.playerControlRight = playerControlsRight[i];
             referencePlayerControl.playerControlDrop = playerControlsDrop[i];
@@ -462,5 +465,19 @@ public class GameManager : MonoBehaviour
         {
             referenceControlsPopup.SetActive(true);
         }
+    }
+
+    public void ClickMusic()
+    {
+        referenceClickAudio.Play();
+        if (referenceBackgroundAudio.mute == true)
+        {
+            referenceBackgroundAudio.mute = false;
+        }
+        else
+        {
+            referenceBackgroundAudio.mute = true;
+        }
+
     }
 }

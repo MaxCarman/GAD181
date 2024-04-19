@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 44052ade291e11d4cbeae8c489c7ef2c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: efa54d740566b784ab6ca5d7756d9908, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -243,7 +243,6 @@ MonoBehaviour:
   referenceOwnerScript: {fileID: 0}
   referenceOrbText: {fileID: 1134860279058638259}
   referenceGameManager: {fileID: 0}
-  referenceMergeParticle: {fileID: 0}
   referenceRigidBody: {fileID: 3129459594590037999}
   referenceCollider: {fileID: 1488417290133805358}
 --- !u!50 &3129459594590037999

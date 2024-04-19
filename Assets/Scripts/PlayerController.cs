@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public int playerID;      //The player's numerical ID.
     public string playerName; //The player's inputted name.
     public Color playerColor; //The player's inputted color.
+    public Sprite playerStyle; //The player's orb style.
 
     public bool playerIsAlive;        //If the player is alive and still in the game.
     public int playerScore;           //The player's score.
@@ -170,10 +171,18 @@ public class PlayerController : MonoBehaviour
         referenceItemController.referenceGameManager = referenceGameManager;
         referenceHeldItem.transform.SetParent(gameObject.transform);
 
+        //Used for the paint powerup.
+        referenceItemController.paintStyle = playerStyle;
+
         //Change colour if it is a orb/powerup, but not junk.
         if (referenceHeldItem.CompareTag("Orb") || referenceHeldItem.CompareTag("Powerup"))
         {
             referenceHeldItem.GetComponent<Renderer>().material.SetColor("_Color", playerColor);
+        }
+
+        //If it is a orb, change its sprite style.
+        if (referenceHeldItem.CompareTag("Orb")){
+            referenceHeldItem.GetComponent<SpriteRenderer>().sprite = playerStyle;
         }
 
         //If the held item is a junk item, randomise its scale and rotation.
