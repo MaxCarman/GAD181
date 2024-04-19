@@ -67,6 +67,7 @@ public class ItemController : MonoBehaviour
         //If out of bounds for more than x seconds, set the player to be out. Only check for orbs.
         if(timerOutOfBounds > 1.2 * 120 && gameObject.tag == "Orb" && referenceOwnerScript.playerIsAlive == true && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
+            var referenceOutAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceOutAudio, new Vector3(transform.position.x, transform.position.y, transform.position.z - 1), Quaternion.identity) as GameObject;
             referenceOwnerScript.playerIsAlive = false;
         }
 
@@ -87,7 +88,7 @@ public class ItemController : MonoBehaviour
             referenceOrbText.transform.localRotation = Quaternion.Inverse(this.gameObject.transform.rotation);
         }
 
-        //If this object is inviisble, also disable the orb text.
+        //If this object is invisble, also disable the orb text.
         if(GetComponent<SpriteRenderer>().enabled == false && gameObject.tag == "Orb" && referenceOrbText != null)
         {
             referenceOrbText.enabled = false;
@@ -122,6 +123,18 @@ public class ItemController : MonoBehaviour
                 referenceItemControlScript.referenceGameManager = this.referenceGameManager;
                 referenceItemControlScript.timerExisted = timerExisted;
 
+                //Create a MergeParticle and transfer scale/color. Increase itensity by multiplying by orb value. Main values need a main variable due to unity limitations.
+                var referenceMergeParticle = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceMergeParticle, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as ParticleSystem;
+                referenceMergeParticle.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 8 + ((float)orbValue)*2)});
+
+                var referenceMergeParticleMain = referenceMergeParticle.main;
+                referenceMergeParticleMain.startColor = GetComponent<Renderer>().material.color;
+                referenceMergeParticleMain.startSize = 0.5f + ((float)orbValue/4) * Random.Range(0.5f,1f);
+
+                //Create a MergeAudio and set its pitch according to the orbValue.
+                var referenceMergeAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceMergeAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
+                referenceMergeAudio.GetComponent<audioController>().audioSource.pitch = 0.7f + (float)orbValue * 0.1f;
+
                 //Destroy both now that the new one is made.
                 Destroy(collision.gameObject);
                 Destroy(this.gameObject);
@@ -130,7 +143,7 @@ public class ItemController : MonoBehaviour
             //If they both somehow have the same time alive, add random values so they will become unsynced and can combine. This SHOULD fix merging problems.
             if (collision.gameObject.tag == "Orb" && timerExisted == referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue && orbValue < 7)
             {
-                timerExisted = Random.Range(1, 2);
+                timerExisted = Random.Range(1, 10);
                 Debug.Log("Merge conflict detected! Fixing...");
             }
         }
@@ -143,6 +156,18 @@ public class ItemController : MonoBehaviour
             {
                 powerupHasTouched = true;
 
+                //Create a EraseParticle. Increase itensity by multiplying by orb value. Main values need a main variable due to unity limitations.
+                var referenceEraseParticle = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceEraseParticle, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as ParticleSystem;
+                referenceEraseParticle.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 8 + orbValue/2) });
+
+                var referenceEraseParticleMain = referenceEraseParticle.main;
+                referenceEraseParticleMain.startColor = GetComponent<Renderer>().material.color;
+                referenceEraseParticleMain.startSize = 0.8f + ((float)referenceCollisionScript.orbValue * 0.1f) * Random.Range(1.2f, 1.8f);
+
+                //Create a EraseAudio and set its pitch according to the orbValue.
+                var referenceEraseAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceEraseAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
+                referenceEraseAudio.GetComponent<audioController>().audioSource.pitch = 0.5f + (float)referenceCollisionScript.orbValue * 0.2f;
+
                 //Destroy the other object.
                 Destroy(collision.gameObject);
             }
@@ -151,6 +176,22 @@ public class ItemController : MonoBehaviour
             if (powerupType == "Paint" && gameObject.tag == "Powerup" && collision.gameObject.tag == "Orb" && itemActive == true && referenceCollisionScript.itemActive == true)
             {
                 powerupHasTouched = true;
+
+                //If it is not the same colour, Create a PaintParticle and PaintAudio. Increase itensity by multiplying by orb value. Main values need a main variable due to unity limitations.
+                if(referenceCollisionScript.itemOwner != this.itemOwner)
+                {
+                    //Particles
+                    var referencePaintParticle = Instantiate(referenceGameManager.GetComponent<GameManager>().referencePaintParticle, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as ParticleSystem;
+                    referencePaintParticle.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 8 + orbValue/2)});
+
+                    var referencePaintParticleMain = referencePaintParticle.main;
+                    referencePaintParticleMain.startColor = GetComponent<Renderer>().material.color;
+                    referencePaintParticleMain.startSize = 0.8f + ((float)referenceCollisionScript.orbValue * 0.1f) * Random.Range(1f, 1.5f);
+
+                    //Audio
+                    var referencePaintAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referencePaintAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
+                    referencePaintAudio.GetComponent<audioController>().audioSource.pitch = 0.5f +(float)referenceCollisionScript.orbValue * 0.2f;
+                }
 
                 //Set the orb's new colour and owner ID.
                 referenceCollisionScript.itemOwner = this.itemOwner;

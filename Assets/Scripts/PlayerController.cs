@@ -39,6 +39,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI referenceScoreText; //A reference to the player's score UI.
     [SerializeField] private TextMeshProUGUI referenceNameText;  //A reference to the player's name UI.
 
+    public AudioSource referenceItemSound; //A reference to the drop item sound source.
+    public AudioSource referencePowerupSound; //A reference to the drop powerup sound source.
+
     // Start is called before the first frame update
     void Start()
     {
@@ -126,6 +129,16 @@ public class PlayerController : MonoBehaviour
     //Function for dropping the held item.
     void DropItem()
     {
+        //If the item is a orb or junk item, play the drop sound, otherwise play the powerup drop sound.
+        if(referenceHeldItem.CompareTag("Orb") || referenceHeldItem.CompareTag("Junk"))
+        {
+            referenceItemSound.Play();
+        }
+        if (referenceHeldItem.CompareTag("Powerup"))
+        {
+            referencePowerupSound.Play();
+        }
+
         //Set the held item to active so it drops, set it to active
         ItemController referenceItemController = referenceHeldItem.GetComponent<ItemController>();
         referenceItemController.itemActive = true;

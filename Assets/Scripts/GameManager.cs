@@ -52,6 +52,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject referenceMarker; //A reference to the player marker gameobject.
     private List<GameObject> referencePlayers; //A list of all the current player control scripts. Used to determine game end conditions and winners.
 
+    //Particle related vars
+    public ParticleSystem referenceMergeParticle; //A reference to the merge particles, which is grabbed by the orbs when required.
+    public ParticleSystem referenceEraseParticle; //A reference to the erase particles, which is grabbed by the powerups when required.
+    public ParticleSystem referencePaintParticle; //A reference to the paint particles, which is grabbed by the powerups when required.
+
+    //Temp Audio related vars
+    public GameObject referenceMergeAudio; //A reference to the merge audio, which is grabbed by orbs when required.
+    public GameObject referenceEraseAudio; //A reference to the erase audio, which is grabbed by powerups when required.
+    public GameObject referencePaintAudio; //A reference to the paint audio, which is grabbed by powerups when required.
+    public GameObject referenceOutAudio;   //A reference to the out audio, which is grabbed by orbs when the player becomes out.
+
+    //Perm Audio related vars
+    [SerializeField] AudioSource referenceWinAudio; //Areference to the  win audio, which is called when a player wins.
+    [SerializeField] AudioSource referenceClickAudio; //Areference to the UI click audio, which is called when a UI button is pressed.
+
     //Misc vars
     float launchCooldown = 0; //Used for title screen launching.
 
@@ -162,6 +177,9 @@ public class GameManager : MonoBehaviour
                 referenceWinnerText.text = gameWinnerName + " WON!";
                 referenceWinnerText.color = gameWinnerColor;
 
+                //Play the winner sound effect.
+                referenceWinAudio.Play();
+
                 //Disable player markers and held items, but not player score texts.
                 for (int i = 0; i < referencePlayers.Count; i++)
                 {
@@ -187,6 +205,8 @@ public class GameManager : MonoBehaviour
     //Function called when the game starts.
     public void SetupGame()
     {
+        referenceClickAudio.Play();
+
         //Clear the game board/queue.
         ClearGame();
         referenceTutorialPopup.SetActive(false);
@@ -323,9 +343,12 @@ public class GameManager : MonoBehaviour
         return list;
     }
 
+    //Below is click events for UI:
+
     //OnClick event for + playercount
     public void ClickPlayerCountPlus()
     {
+        referenceClickAudio.Play();
         settingPlayerCount += 1;
         settingPlayerCount = Mathf.Clamp(settingPlayerCount,2,4);
     }
@@ -333,21 +356,24 @@ public class GameManager : MonoBehaviour
     //OnClick event for - playercount
     public void ClickPlayerCountMinus()
     {
+        referenceClickAudio.Play();
         settingPlayerCount -= 1;
         settingPlayerCount = Mathf.Clamp(settingPlayerCount, 2, 4);
     }
 
     //OnClick event for + map
-    public void ClickPlayerMapPlus()
+    public void ClickMapPlus()
     {
+        referenceClickAudio.Play();
         settingMap += 1;
         settingMap = Mathf.Clamp(settingMap, 0, referenceMapObjects.Count-1);
         UpdateMap();
     }
 
     //OnClick event for - map
-    public void ClickPlayerMapMinus()
+    public void ClickMapMinus()
     {
+        referenceClickAudio.Play();
         settingMap -= 1;
         settingMap = Mathf.Clamp(settingMap, 0, referenceMapObjects.Count-1);
         UpdateMap();
@@ -369,6 +395,7 @@ public class GameManager : MonoBehaviour
     //OnClick event for the exit button. If in-game, go back to the title screen, if in the pre-game, then send them back to the gems select screen.
     public void ClickExit()
     {
+        referenceClickAudio.Play();
         if (gameState == 0)
         {
             Application.Quit();
@@ -393,6 +420,7 @@ public class GameManager : MonoBehaviour
     //OnClick event for the fullscreen button. Toggles between windows and borderless window.
     public void ClickFullscreen()
     {
+        referenceClickAudio.Play();
         if (Screen.fullScreenMode == FullScreenMode.Windowed)
         {
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
@@ -410,6 +438,7 @@ public class GameManager : MonoBehaviour
     //OnClick event for the tutorial button. Toggles based on visibility.
     public void ClickTutorial()
     {
+        referenceClickAudio.Play();
         referenceControlsPopup.SetActive(false);
         if(referenceTutorialPopup.activeSelf == true)
         {
@@ -423,6 +452,7 @@ public class GameManager : MonoBehaviour
     //OnClick event for the tutorial button. Toggles based on visibility.
     public void ClickControls()
     {
+        referenceClickAudio.Play();
         referenceTutorialPopup.SetActive(false);
         if (referenceControlsPopup.activeSelf == true)
         {
