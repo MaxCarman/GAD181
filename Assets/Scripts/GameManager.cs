@@ -121,7 +121,7 @@ public class GameManager : MonoBehaviour
             //If there are only 8 values in the list left, add another bag to the end.
             if (gameQueue.Count <= 8)
             {
-                SetupQueue(20, 10, 4, 1, 0, 0, 0, 1, 1, 1, 1);
+                SetupQueue(20, 10, 4, 1, 1, 1, 1, 1);
             }
 
             //Update visuals for the shown queue.
@@ -129,11 +129,12 @@ public class GameManager : MonoBehaviour
             {
                 //Set the queue image.
                 referenceQueueImages[i].sprite = gameQueue[i].GetComponent<SpriteRenderer>().sprite;
-                referenceQueueImages[i].transform.localScale = gameQueue[i].transform.localScale;
 
                 //If the queue item is a orb, then update the text to show its orbValue, otherwise hide the text.
                 if (gameQueue[i].gameObject.tag == "Orb")
                 {
+                    referenceQueueImages[i].transform.localScale = new Vector3(0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.2f), 0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.2f), 0);
+                    referenceQueueText[i].fontSize = 36f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 2f);
                     referenceQueueText[i].enabled = true;
                     ItemController referenceItemController = gameQueue[i].GetComponent<ItemController>();
                     referenceQueueText[i].text = referenceItemController.orbValue.ToString();
@@ -141,6 +142,7 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     referenceQueueText[i].enabled = false;
+                    referenceQueueImages[i].transform.localScale = new Vector3(1,1,1);
                 }
             }
 
@@ -215,7 +217,7 @@ public class GameManager : MonoBehaviour
         referenceTutorialPopup.SetActive(false);
 
         //Create a new queue.
-        SetupQueue(20, 10, 4, 1, 0, 0, 0, 1, 1, 1, 1);
+        SetupQueue(20, 10, 4, 1, 1, 1, 1, 1);
         referencePlayers = new List<GameObject>();
 
         gamePlayersAlive = settingPlayerCount;
@@ -254,7 +256,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Ammends a new, full queue of prefabs based on the list settings.
-    void SetupQueue(int orb1, int orb2, int orb3, int orb4, int orb5, int orb6, int orb7, int junkSquare, int junkTriangle, int powerupEraser, int powerupPaint)
+    void SetupQueue(int orb1, int orb2, int orb3, int orb4, int junkSquare, int junkTriangle, int powerupEraser, int powerupPaint)
     {
         for (int i = 0; i < orb1; i++){
             gameQueue.Add(referenceItems[0]);
@@ -271,33 +273,21 @@ public class GameManager : MonoBehaviour
         {
             gameQueue.Add(referenceItems[3]);
         }
-        for (int i = 0; i < orb5; i++)
+        for (int i = 0; i < junkSquare; i++)
         {
             gameQueue.Add(referenceItems[4]);
         }
-        for (int i = 0; i < orb6; i++)
+        for (int i = 0; i < junkTriangle; i++)
         {
             gameQueue.Add(referenceItems[5]);
         }
-        for (int i = 0; i < orb7; i++)
+        for (int i = 0; i < powerupEraser; i++)
         {
             gameQueue.Add(referenceItems[6]);
         }
-        for (int i = 0; i < junkSquare; i++)
-        {
-            gameQueue.Add(referenceItems[7]);
-        }
-        for (int i = 0; i < junkTriangle; i++)
-        {
-            gameQueue.Add(referenceItems[8]);
-        }
-        for (int i = 0; i < powerupEraser; i++)
-        {
-            gameQueue.Add(referenceItems[9]);
-        }
         for (int i = 0; i < powerupPaint; i++)
         {
-            gameQueue.Add(referenceItems[10]);
+            gameQueue.Add(referenceItems[7]);
         }
 
         //Randomize the list order

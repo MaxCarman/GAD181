@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Attached to each sound object. After a vreif period, the object is destroyed so that empty sound objects dont build up and cause issues as the game progresses.
-public class audioController : MonoBehaviour
+public class AudioController : MonoBehaviour
 {
     int timer = 0; //The timer until the object despawns.
     public AudioSource audioSource; //A reference to the child audio source object.

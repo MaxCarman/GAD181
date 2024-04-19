@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class spinnerController : MonoBehaviour
+public class SpinnerController : MonoBehaviour
 {
     //Delcare variables
     [SerializeField] private float spinnerTurnSpeed; //Defines the turn speed/direction.

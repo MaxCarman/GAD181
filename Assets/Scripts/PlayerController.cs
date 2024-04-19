@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        //If te player is not alive, then disable child objects.
+        //If the player is not alive, then disable child objects.
         if (playerIsAlive == false)
         {
             referenceOutOfGameEffect.SetActive(true);
@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Instantiate the new held item, and assign its owner/references.
-        referenceHeldItem = Instantiate(playerHeldItem, new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z), Quaternion.identity) as GameObject;
+        referenceHeldItem = Instantiate(playerHeldItem, new Vector3(transform.position.x, transform.position.y + 0.9f, transform.position.z), Quaternion.identity) as GameObject;
         ItemController referenceItemController = referenceHeldItem.GetComponent<ItemController>();
         referenceItemController.itemOwner = playerID;
         referenceItemController.referenceOwnerScript = this.GetComponent<PlayerController>();

@@ -15,8 +15,8 @@ public class ItemController : MonoBehaviour
     public int timerExisted = 0;      //How many ticks this item has existed for.
 
     //Orb specific vars
-    public int orbValue;                                        //The size and point value of this orb. Should be 1-7 for orbs, or 0 for powerups and junk.
-    [SerializeField] private GameObject referenceNextEvolution; //The object this orb evolves into after merging.
+    public int orbValue;                                        //The size and point value of this orb, or 0 for powerups and junk.
+    [SerializeField] private GameObject orbEvolution; //A reference to this prefab, which is used for merging and spawning.
 
     //Powerup specific vars
     public string powerupType;               //The type of powerup this item is, is either Eraser or Paint.
@@ -35,7 +35,14 @@ public class ItemController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        //Set the orbs scale and text size based on orbScale.
+        if(gameObject.tag == "Orb")
+        {
+            transform.localScale = new Vector3(0.3f + ((float)orbValue * 0.2f), 0.3f + ((float)orbValue * 0.2f), 1);
+            referenceOrbText.text = orbValue.ToString();
+            //referenceOrbText.fontSize = 0.8f + ((float)orbValue * 0.1f);
+        }
+        
     }
 
     // Update is called once per frame
@@ -106,13 +113,12 @@ public class ItemController : MonoBehaviour
         if (gameObject.tag == "Orb" && referenceGameManager.GetComponent<GameManager>().gameState == 1)
         {
             //Check if the same tag, check if both have the same owner and check if older than the other (to make it only happen once). Check if its been alive for a bit to avoid instant merging.
-            if (collision.gameObject.tag == "Orb" && timerExisted > referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue && orbValue < 7)
+            if (collision.gameObject.tag == "Orb" && timerExisted > referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue)
             {
-                //Create the new object and set its colour/style
-                var referenceNewItem = Instantiate(referenceNextEvolution, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z), Quaternion.identity) as GameObject;
+                //Create the new object and set its colour/style.
+                var referenceNewItem = Instantiate(orbEvolution, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z), Quaternion.identity) as GameObject;
                 referenceNewItem.GetComponent<Renderer>().material.SetColor("_Color", GetComponent<Renderer>().material.color);
                 referenceNewItem.GetComponent<SpriteRenderer>().sprite = this.GetComponent<SpriteRenderer>().sprite;
-
 
                 //Add points to the player based on the merge value.
                 referenceOwnerScript.playerScore += orbValue * 2;
@@ -124,6 +130,7 @@ public class ItemController : MonoBehaviour
                 referenceItemControlScript.itemActive = true;
                 referenceItemControlScript.referenceGameManager = this.referenceGameManager;
                 referenceItemControlScript.timerExisted = timerExisted;
+                referenceItemControlScript.orbValue = this.orbValue + 1;
 
                 //Create a MergeParticle and transfer scale/color. Increase itensity by multiplying by orb value. Main values need a main variable due to unity limitations.
                 var referenceMergeParticle = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceMergeParticle, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as ParticleSystem;
@@ -135,7 +142,7 @@ public class ItemController : MonoBehaviour
 
                 //Create a MergeAudio and set its pitch according to the orbValue.
                 var referenceMergeAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceMergeAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
-                referenceMergeAudio.GetComponent<audioController>().audioSource.pitch = 0.7f + (float)orbValue * 0.1f;
+                referenceMergeAudio.GetComponent<AudioController>().audioSource.pitch = 0.7f + (float)orbValue * 0.1f;
 
                 //Destroy both now that the new one is made.
                 Destroy(collision.gameObject);
@@ -143,7 +150,7 @@ public class ItemController : MonoBehaviour
             }
 
             //If they both somehow have the same time alive, add random values so they will become unsynced and can combine. This SHOULD fix merging problems.
-            if (collision.gameObject.tag == "Orb" && timerExisted == referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue && orbValue < 7)
+            if (collision.gameObject.tag == "Orb" && timerExisted == referenceCollisionScript.timerExisted && itemOwner == referenceCollisionScript.itemOwner && orbValue == referenceCollisionScript.orbValue)
             {
                 timerExisted = Random.Range(1, 10);
                 Debug.Log("Merge conflict detected! Fixing...");
@@ -168,7 +175,7 @@ public class ItemController : MonoBehaviour
 
                 //Create a EraseAudio and set its pitch according to the orbValue.
                 var referenceEraseAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceEraseAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
-                referenceEraseAudio.GetComponent<audioController>().audioSource.pitch = 0.5f + (float)referenceCollisionScript.orbValue * 0.2f;
+                referenceEraseAudio.GetComponent<AudioController>().audioSource.pitch = 0.5f + (float)referenceCollisionScript.orbValue * 0.2f;
 
                 //Destroy the other object.
                 Destroy(collision.gameObject);
@@ -192,7 +199,7 @@ public class ItemController : MonoBehaviour
 
                     //Audio
                     var referencePaintAudio = Instantiate(referenceGameManager.GetComponent<GameManager>().referencePaintAudio, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 1), Quaternion.identity) as GameObject;
-                    referencePaintAudio.GetComponent<audioController>().audioSource.pitch = 0.5f +(float)referenceCollisionScript.orbValue * 0.2f;
+                    referencePaintAudio.GetComponent<AudioController>().audioSource.pitch = 0.5f +(float)referenceCollisionScript.orbValue * 0.2f;
                 }
 
                 //Set the orb's new colour/style and owner ID.

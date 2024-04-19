@@ -1049,10 +1049,11 @@ MonoBehaviour:
   playerID: 0
   playerName: 
   playerColor: {r: 1, g: 1, b: 1, a: 1}
+  playerStyle: {fileID: 0}
   playerIsAlive: 1
   playerScore: 0
   playerHeldItem: {fileID: 0}
-  playerStartingItem: {fileID: 6168553872125743738, guid: ca14995aaf2f3f5499ba3898877e1272, type: 3}
+  playerStartingItem: {fileID: 8299534310049377646, guid: e42f725de73c24d4cb14a85fa60a1641, type: 3}
   playerControlLeft: 0
   playerControlRight: 0
   playerControlDrop: 0
