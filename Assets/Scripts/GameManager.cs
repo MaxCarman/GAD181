@@ -10,13 +10,17 @@ using UnityEngine.UIElements;
 public class GameManager : MonoBehaviour
 {
     //Declare variables
-    //Game settings
+    //Game data
     public int gameState;          //The current game state. 0 = Pre-Game, 1 = In-Game, 2 = Post-Game
     public int gamePlayersAlive;   //The current amount of players alive in the game.
     public string gameWinnerName;  //The playerName of the winner.
     public Color gameWinnerColor;  //The color of the winner.
+
+    //Game settings
     public int settingPlayerCount; //The amount of players playing the game.
     public int settingMap;         //The selected map.
+    public float settingItemScale; //The scale modifier for items.
+    public float settingItemBounce; //The bounce modifier for items.
 
     //Queue related vars
     public List<GameObject> gameQueue; //The list of gameobjects currently in the queue.
@@ -28,6 +32,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Canvas referenceCanvasPregame;            //A reference to the pregame canvas.
     [SerializeField] private TextMeshProUGUI referencePlayerCountText; //A reference to the pregame player count text.
     [SerializeField] private TextMeshProUGUI referenceMapText;         //A reference to the pregame map text.
+    [SerializeField] private TextMeshProUGUI referenceItemScaleText;   //A reference to the pregame item scale text.
+    [SerializeField] private TextMeshProUGUI referenceItemBounceText;   //A reference to the pregame item bounce text.
 
     [SerializeField] private GameObject referenceTutorialPopup; //A reference to the tutorial popup.
     [SerializeField] private GameObject referenceControlsPopup; //A reference to the controls popup.
@@ -88,11 +94,11 @@ public class GameManager : MonoBehaviour
             referenceCanvasPregame.enabled = true;
             referenceCanvasPostgame.enabled = false;
 
-            //Update player count text
+            //Update settings text
             referencePlayerCountText.text = "Player Count: " + settingPlayerCount;
-
-            //Update map text
             referenceMapText.text = "Map Type: " + referenceMapNames[settingMap];
+            referenceItemScaleText.text = "Item Scale: x" + settingItemScale;
+            referenceItemBounceText.text = "Item Bounce: x" + settingItemBounce;
 
             //Launch orbs around!
             launchCooldown += 1;
@@ -384,6 +390,39 @@ public class GameManager : MonoBehaviour
         //Show specific map
         referenceMapObjects[settingMap].SetActive(true);
     }
+
+    //OnClick event for + itemScale
+    public void ClickItemScalePlus()
+    {
+        referenceClickAudio.Play();
+        settingItemScale += 0.1f;
+        settingItemScale = Mathf.Clamp(settingItemScale, 0.5f, 3);
+    }
+
+    //OnClick event for - itemScale
+    public void ClickItemScaleMinus()
+    {
+        referenceClickAudio.Play();
+        settingItemScale -= 0.1f;
+        settingItemScale = Mathf.Clamp(settingItemScale, 0.5f, 3);
+    }
+
+    //OnClick event for + itemBounce
+    public void ClickItemBouncePlus()
+    {
+        referenceClickAudio.Play();
+        settingItemBounce += 0.1f;
+        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 1);
+    }
+
+    //OnClick event for - itemBounce
+    public void ClickItemBounceMinus()
+    {
+        referenceClickAudio.Play();
+        settingItemBounce -= 0.1f;
+        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 1);
+    }
+
 
     //OnClick event for the exit button. If in-game, go back to the title screen, if in the pre-game, then send them back to the gems select screen.
     public void ClickExit()

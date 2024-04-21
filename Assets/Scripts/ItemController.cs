@@ -16,7 +16,7 @@ public class ItemController : MonoBehaviour
 
     //Orb specific vars
     public int orbValue;                                        //The size and point value of this orb, or 0 for powerups and junk.
-    [SerializeField] private GameObject orbEvolution; //A reference to this prefab, which is used for merging and spawning.
+    [SerializeField] private GameObject orbEvolution;           //A reference to the dynamic orb prefab, which is used for merging.
 
     //Powerup specific vars
     public string powerupType;               //The type of powerup this item is, is either Eraser or Paint.
@@ -40,7 +40,13 @@ public class ItemController : MonoBehaviour
         {
             transform.localScale = new Vector3(0.3f + ((float)orbValue * 0.2f), 0.3f + ((float)orbValue * 0.2f), 1);
             referenceOrbText.text = orbValue.ToString();
-            //referenceOrbText.fontSize = 0.8f + ((float)orbValue * 0.1f);
+        }
+        
+        //Apply the itemScale and itemBounce setting this item if it is a orb and junk item.
+        if(gameObject.tag == "Orb" || gameObject.tag == "Junk" || gameObject.tag == "Powerup")
+        {
+            transform.localScale = transform.localScale * referenceGameManager.GetComponent<GameManager>().settingItemScale;
+            referenceRigidBody.sharedMaterial.bounciness = referenceGameManager.GetComponent<GameManager>().settingItemBounce;
         }
         
     }

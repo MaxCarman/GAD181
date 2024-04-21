@@ -103,8 +103,9 @@ MonoBehaviour:
   itemActive: 0
   timerExisted: 0
   orbValue: 0
-  referenceNextEvolution: {fileID: 0}
+  orbEvolution: {fileID: 0}
   powerupType: Eraser
+  paintStyle: {fileID: 0}
   referenceOwnerScript: {fileID: 0}
   referenceOrbText: {fileID: 0}
   referenceGameManager: {fileID: 0}
@@ -126,7 +127,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 953c6fbd6415d7d429b580c861c7c87c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
