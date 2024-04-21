@@ -17,10 +17,12 @@ public class GameManager : MonoBehaviour
     public Color gameWinnerColor;  //The color of the winner.
 
     //Game settings
-    public int settingPlayerCount; //The amount of players playing the game.
-    public int settingMap;         //The selected map.
-    public float settingItemScale; //The scale modifier for items.
+    public int settingPlayerCount;  //The amount of players playing the game.
+    public int settingMap;          //The selected map.
+    public float settingItemScale;  //The scale modifier for items.
     public float settingItemBounce; //The bounce modifier for items.
+    public int settingPowerupMulti; //The powerup multiplier
+    public int settingJunkMulti;    //The junk multiplier
 
     //Queue related vars
     public List<GameObject> gameQueue; //The list of gameobjects currently in the queue.
@@ -29,12 +31,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<TextMeshProUGUI> referenceQueueText; //A reference to the 7 queue text slots.
 
     //Pregame/Postgame UI related vars
-    [SerializeField] private Canvas referenceCanvasPregame;            //A reference to the pregame canvas.
-    [SerializeField] private TextMeshProUGUI referencePlayerCountText; //A reference to the pregame player count text.
-    [SerializeField] private TextMeshProUGUI referenceMapText;         //A reference to the pregame map text.
-    [SerializeField] private TextMeshProUGUI referenceItemScaleText;   //A reference to the pregame item scale text.
+    [SerializeField] private Canvas referenceCanvasPregame;             //A reference to the pregame canvas.
+    [SerializeField] private TextMeshProUGUI referencePlayerCountText;  //A reference to the pregame player count text.
+    [SerializeField] private TextMeshProUGUI referenceMapText;          //A reference to the pregame map text.
+    [SerializeField] private TextMeshProUGUI referenceItemScaleText;    //A reference to the pregame item scale text.
     [SerializeField] private TextMeshProUGUI referenceItemBounceText;   //A reference to the pregame item bounce text.
+    [SerializeField] private TextMeshProUGUI referencePowerupMultiText; //A reference to the pregame powerup multi text.
+    [SerializeField] private TextMeshProUGUI referenceJunkMultiText;    //A reference to the pregame junk multi text.
 
+    [SerializeField] private GameObject referenceWarningPopup; //A reference to the player count warning popup.
     [SerializeField] private GameObject referenceTutorialPopup; //A reference to the tutorial popup.
     [SerializeField] private GameObject referenceControlsPopup; //A reference to the controls popup.
 
@@ -99,6 +104,17 @@ public class GameManager : MonoBehaviour
             referenceMapText.text = "Map Type: " + referenceMapNames[settingMap];
             referenceItemScaleText.text = "Item Scale: x" + settingItemScale;
             referenceItemBounceText.text = "Item Bounce: x" + settingItemBounce;
+            referencePowerupMultiText.text = "Powerup Multi: x" + settingPowerupMulti;
+            referenceJunkMultiText.text = "Junk Multi: x" + settingJunkMulti;
+
+            //If the player count is less than 4, enable the warning popup, otherwise hide it.
+            if (settingPlayerCount >= 4)
+            {
+                referenceWarningPopup.SetActive(false);
+            } else
+            {
+                referenceWarningPopup.SetActive(true);
+            }
 
             //Launch orbs around!
             launchCooldown += 1;
@@ -162,8 +178,8 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            //If there are 1 or no players left, end the game.
-            if (gamePlayersAlive <= 1)
+            //If there are 1 or no players left, end the game. OR if they are playing singleplayer, end if there are 0 players.
+            if ((gamePlayersAlive <= 1 && settingPlayerCount != 1) || (gamePlayersAlive == 0 && settingPlayerCount == 1))
             {
                 List<int> playerScores = new List<int>();
                 //Find the player with the highest score by creating a list of scores, sorting them and taking the first index. Then compare this index back to the scripts, stopping when the first index matchs the script's score value.
@@ -264,40 +280,61 @@ public class GameManager : MonoBehaviour
     //Ammends a new, full queue of prefabs based on the list settings.
     void SetupQueue(int orb1, int orb2, int orb3, int orb4, int junkSquare, int junkTriangle, int powerupEraser, int powerupPaint)
     {
-        for (int i = 0; i < orb1; i++){
-            gameQueue.Add(referenceItems[0]);
-        }
-        for (int i = 0; i < orb2; i++)
+        //Make a new temp queue list.
+        List<GameObject> tempQueue = new List<GameObject>();
+
+        //Apply multiplier settings.
+        junkSquare = junkSquare * settingJunkMulti;
+        junkTriangle = junkTriangle * settingJunkMulti;
+        powerupEraser = powerupEraser * settingPowerupMulti;
+        powerupPaint = powerupPaint * settingPowerupMulti;
+
+        //Dont spawn paint buckets in singleplayer!
+        if(settingPlayerCount == 1)
         {
-            gameQueue.Add(referenceItems[1]);
+            powerupPaint = 0;
         }
-        for (int i = 0; i < orb3; i++)
+
+        //Add items to the queue.
+        for (int i = 0; i < orb1; i++) //Lv 1 Orbs
         {
-            gameQueue.Add(referenceItems[2]);
+            tempQueue.Add(referenceItems[0]);
         }
-        for (int i = 0; i < orb4; i++)
+        for (int i = 0; i < orb2; i++) //Lv 2 Orbs
         {
-            gameQueue.Add(referenceItems[3]);
+            tempQueue.Add(referenceItems[1]);
         }
-        for (int i = 0; i < junkSquare; i++)
+        for (int i = 0; i < orb3; i++) //Lv 3 Orbs
         {
-            gameQueue.Add(referenceItems[4]);
+            tempQueue.Add(referenceItems[2]);
         }
-        for (int i = 0; i < junkTriangle; i++)
+        for (int i = 0; i < orb4; i++) //Lv 4 Orbs
         {
-            gameQueue.Add(referenceItems[5]);
+            tempQueue.Add(referenceItems[3]);
         }
-        for (int i = 0; i < powerupEraser; i++)
+        for (int i = 0; i < junkSquare; i++) //Square Junk. Multiply by the JunkMulti Stat.
         {
-            gameQueue.Add(referenceItems[6]);
+            tempQueue.Add(referenceItems[4]);
         }
-        for (int i = 0; i < powerupPaint; i++)
+        for (int i = 0; i < junkTriangle; i++) //Triangular Junk. Multiply by the JunkMulti Stat.
         {
-            gameQueue.Add(referenceItems[7]);
+            tempQueue.Add(referenceItems[5]);
+        }
+        for (int i = 0; i < powerupEraser; i++) //Eraser Powerup. Multiply by the PowerupMulti Stat.
+        {
+            tempQueue.Add(referenceItems[6]);
+        }
+        for (int i = 0; i < powerupPaint; i++) //Paint Powerup. Multiply by the PowerupMulti Stat.
+        {
+            tempQueue.Add(referenceItems[7]);
         }
 
         //Randomize the list order
-        ShuffleList(gameQueue);
+        ShuffleList(tempQueue);
+
+        //Add this temp list to the end of the gameQueue.
+        gameQueue.AddRange(tempQueue);
+
     }
 
     //Clears the game board/players/queue.
@@ -349,7 +386,7 @@ public class GameManager : MonoBehaviour
     {
         referenceClickAudio.Play();
         settingPlayerCount += 1;
-        settingPlayerCount = Mathf.Clamp(settingPlayerCount,2,4);
+        settingPlayerCount = Mathf.Clamp(settingPlayerCount,1,4);
     }
 
     //OnClick event for - playercount
@@ -357,7 +394,7 @@ public class GameManager : MonoBehaviour
     {
         referenceClickAudio.Play();
         settingPlayerCount -= 1;
-        settingPlayerCount = Mathf.Clamp(settingPlayerCount, 2, 4);
+        settingPlayerCount = Mathf.Clamp(settingPlayerCount, 1, 4);
     }
 
     //OnClick event for + map
@@ -421,6 +458,38 @@ public class GameManager : MonoBehaviour
         referenceClickAudio.Play();
         settingItemBounce -= 0.1f;
         settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 1);
+    }
+
+    //OnClick event for + powerupMulti
+    public void ClickPowerupMultiPlus()
+    {
+        referenceClickAudio.Play();
+        settingPowerupMulti += 1;
+        settingPowerupMulti = Mathf.Clamp(settingPowerupMulti, 0, 3);
+    }
+
+    //OnClick event for - powerupMulti
+    public void ClickPowerupMultiMinus()
+    {
+        referenceClickAudio.Play();
+        settingPowerupMulti -= 1;
+        settingPowerupMulti = Mathf.Clamp(settingPowerupMulti, 0, 3);
+    }
+
+    //OnClick event for + junkMulti
+    public void ClickJunkMultiPlus()
+    {
+        referenceClickAudio.Play();
+        settingJunkMulti += 1;
+        settingJunkMulti = Mathf.Clamp(settingJunkMulti, 0, 3);
+    }
+
+    //OnClick event for - junkMulti
+    public void ClickJunkMultiMinus()
+    {
+        referenceClickAudio.Play();
+        settingJunkMulti -= 1;
+        settingJunkMulti = Mathf.Clamp(settingJunkMulti, 0, 3);
     }
 
 
