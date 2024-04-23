@@ -38,15 +38,20 @@ public class ItemController : MonoBehaviour
         //Set the orbs scale and text size based on orbScale.
         if(gameObject.tag == "Orb")
         {
-            transform.localScale = new Vector3(0.3f + ((float)orbValue * 0.2f), 0.3f + ((float)orbValue * 0.2f), 1);
+            transform.localScale = new Vector3(0.4f + ((float)orbValue * 0.2f), 0.4f + ((float)orbValue * 0.2f), 1);
             referenceOrbText.text = orbValue.ToString();
         }
         
         //Apply the itemScale and itemBounce setting this item if it is a orb and junk item.
         if(gameObject.tag == "Orb" || gameObject.tag == "Junk" || gameObject.tag == "Powerup")
         {
-            transform.localScale = transform.localScale * referenceGameManager.GetComponent<GameManager>().settingItemScale;
-            referenceRigidBody.sharedMaterial.bounciness = referenceGameManager.GetComponent<GameManager>().settingItemBounce;
+            //Get settings
+            float itemScale = referenceGameManager.GetComponent<GameManager>().settingItemScale;
+            float itemBounce = referenceGameManager.GetComponent<GameManager>().settingItemBounce;
+
+            //Apply settings
+            transform.localScale = transform.localScale * (itemScale / 10);
+            referenceRigidBody.sharedMaterial.bounciness = itemBounce / 10;
         }
         
     }

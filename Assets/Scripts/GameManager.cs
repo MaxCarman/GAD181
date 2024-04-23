@@ -19,8 +19,8 @@ public class GameManager : MonoBehaviour
     //Game settings
     public int settingPlayerCount;  //The amount of players playing the game.
     public int settingMap;          //The selected map.
-    public float settingItemScale;  //The scale modifier for items.
-    public float settingItemBounce; //The bounce modifier for items.
+    public int settingItemScale;  //The scale modifier for items.
+    public int settingItemBounce; //The bounce modifier for items.
     public int settingPowerupMulti; //The powerup multiplier
     public int settingJunkMulti;    //The junk multiplier
 
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Canvas referenceCanvasPostgame; //A reference to the postgame canvas.
     [SerializeField] private TextMeshProUGUI referenceWinnerText; //A reference to the postgame winner text.
 
-    [SerializeField] private TextMeshProUGUI referenceFPSText; //A reference to the fps text.
+    [SerializeField] private Canvas referenceCanvasIngame; //A reference to the ingame canvas.
 
     //Map related vars
     [SerializeField] private List<GameObject> referenceMapObjects; //A list of parent objects for each map.
@@ -96,14 +96,15 @@ public class GameManager : MonoBehaviour
         if (gameState == 0)
         {
             //Show specific canvases
+            referenceCanvasIngame.enabled = false;
             referenceCanvasPregame.enabled = true;
             referenceCanvasPostgame.enabled = false;
 
             //Update settings text
             referencePlayerCountText.text = "Player Count: " + settingPlayerCount;
             referenceMapText.text = "Map Type: " + referenceMapNames[settingMap];
-            referenceItemScaleText.text = "Item Scale: x" + settingItemScale;
-            referenceItemBounceText.text = "Item Bounce: x" + settingItemBounce;
+            referenceItemScaleText.text = "Item Size: x" + (float)settingItemScale/10;
+            referenceItemBounceText.text = "Item Bounce: x" + (float)settingItemBounce /10;
             referencePowerupMultiText.text = "Powerup Multi: x" + settingPowerupMulti;
             referenceJunkMultiText.text = "Junk Multi: x" + settingJunkMulti;
 
@@ -137,6 +138,7 @@ public class GameManager : MonoBehaviour
         if(gameState == 1)
         {
             //Show specific canvases
+            referenceCanvasIngame.enabled = true;
             referenceCanvasPregame.enabled = false;
             referenceCanvasPostgame.enabled = false;
 
@@ -222,6 +224,7 @@ public class GameManager : MonoBehaviour
         if(gameState == 2)
         {
             //Show specific canvases
+            referenceCanvasIngame.enabled = false;
             referenceCanvasPregame.enabled = false;
             referenceCanvasPostgame.enabled = true;
         }
@@ -432,32 +435,32 @@ public class GameManager : MonoBehaviour
     public void ClickItemScalePlus()
     {
         referenceClickAudio.Play();
-        settingItemScale += 0.1f;
-        settingItemScale = Mathf.Clamp(settingItemScale, 0.5f, 3);
+        settingItemScale += 1;
+        settingItemScale = Mathf.Clamp(settingItemScale, 5, 30);
     }
 
     //OnClick event for - itemScale
     public void ClickItemScaleMinus()
     {
         referenceClickAudio.Play();
-        settingItemScale -= 0.1f;
-        settingItemScale = Mathf.Clamp(settingItemScale, 0.5f, 3);
+        settingItemScale -= 1;
+        settingItemScale = Mathf.Clamp(settingItemScale, 5, 30);
     }
 
     //OnClick event for + itemBounce
     public void ClickItemBouncePlus()
     {
         referenceClickAudio.Play();
-        settingItemBounce += 0.1f;
-        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 1);
+        settingItemBounce += 1;
+        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 10);
     }
 
     //OnClick event for - itemBounce
     public void ClickItemBounceMinus()
     {
         referenceClickAudio.Play();
-        settingItemBounce -= 0.1f;
-        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 1);
+        settingItemBounce -= 1;
+        settingItemBounce = Mathf.Clamp(settingItemBounce, 0, 10);
     }
 
     //OnClick event for + powerupMulti
@@ -491,6 +494,22 @@ public class GameManager : MonoBehaviour
         settingJunkMulti -= 1;
         settingJunkMulti = Mathf.Clamp(settingJunkMulti, 0, 3);
     }
+
+    //OnClick event for the reset settings button.
+    public void ClickResetSettings()
+    {
+        referenceClickAudio.Play();
+
+        //Reset settings
+        settingPlayerCount = 4;
+        settingMap = 0;
+        settingItemScale = 10;
+        settingItemBounce = 2;
+        settingPowerupMulti = 1;
+        settingJunkMulti = 1;
+
+        UpdateMap();
+}
 
 
     //OnClick event for the exit button. If in-game, go back to the title screen, if in the pre-game, then send them back to the gems select screen.
