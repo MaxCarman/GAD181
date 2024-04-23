@@ -69,6 +69,8 @@ public class GameManager : MonoBehaviour
     public ParticleSystem referenceEraseParticle; //A reference to the erase particles, which is grabbed by the powerups when required.
     public ParticleSystem referencePaintParticle; //A reference to the paint particles, which is grabbed by the powerups when required.
 
+    public GameObject referenceFloatingText; //A reference to the temporary floating text.
+
     //Temp Audio related vars
     public GameObject referenceMergeAudio; //A reference to the merge audio, which is grabbed by orbs when required.
     public GameObject referenceEraseAudio; //A reference to the erase audio, which is grabbed by powerups when required.

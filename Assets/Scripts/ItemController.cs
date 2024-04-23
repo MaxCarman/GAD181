@@ -131,8 +131,13 @@ public class ItemController : MonoBehaviour
                 referenceNewItem.GetComponent<Renderer>().material.SetColor("_Color", GetComponent<Renderer>().material.color);
                 referenceNewItem.GetComponent<SpriteRenderer>().sprite = this.GetComponent<SpriteRenderer>().sprite;
 
-                //Add points to the player based on the merge value.
-                referenceOwnerScript.playerScore += orbValue * 2;
+                //Add points to the player based on the merge value, and summon a floating text.
+                int points = orbValue * 2;
+                referenceOwnerScript.playerScore += points;
+                var referenceNewFloatingText = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceFloatingText, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 2), Quaternion.identity) as GameObject;
+                referenceNewFloatingText.GetComponent<TextController>().referenceText.color = GetComponent<Renderer>().material.color;
+                referenceNewFloatingText.GetComponent<TextController>().referenceText.SetText("+" + points);
+                referenceNewFloatingText.transform.localScale = new Vector3(1 + (points * 0.25f), 1 + (points * 0.25f),1);
 
                 //Carry over this orbs's values onto the next object.
                 ItemController referenceItemControlScript = referenceNewItem.GetComponent<ItemController>();
