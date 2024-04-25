@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3619700599663671730}
   - component: {fileID: 7077967019135282524}
   - component: {fileID: 4502211625188204857}
-  - component: {fileID: 3849488393587146033}
+  - component: {fileID: 3597100140649270791}
   m_Layer: 0
   m_Name: JunkTriangle
   m_TagString: Junk
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5901993779367735369}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.457, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3490b3bad3786534aac484442f74fa77, type: 3}
   m_Color: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -110,7 +110,7 @@ MonoBehaviour:
   referenceOrbText: {fileID: 0}
   referenceGameManager: {fileID: 0}
   referenceRigidBody: {fileID: 4502211625188204857}
-  referenceCollider: {fileID: 3849488393587146033}
+  referenceCollider: {fileID: 3597100140649270791}
 --- !u!50 &4502211625188204857
 Rigidbody2D:
   serializedVersion: 4
@@ -138,7 +138,7 @@ Rigidbody2D:
   m_SleepingMode: 2
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!60 &3849488393587146033
+--- !u!60 &3597100140649270791
 PolygonCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -173,16 +173,20 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
+    pivot: {x: 0.5, y: 0.4}
     oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 2.56, y: 2.56}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0, y: 0.5773587}
-      - {x: -0.5, y: -0.28866667}
-      - {x: 0.5, y: -0.28866667}
+    - - {x: -0.015625, y: 0.6}
+      - {x: -0.0234375, y: 0.5960938}
+      - {x: -0.5, y: -0.3609375}
+      - {x: -0.5, y: -0.4}
+      - {x: 0.5, y: -0.4}
+      - {x: 0.5, y: -0.34921876}
+      - {x: 0.01953125, y: 0.6}
   m_UseDelaunayMesh: 0

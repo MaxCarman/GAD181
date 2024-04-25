@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI referenceWinnerText; //A reference to the postgame winner text.
 
     [SerializeField] private Canvas referenceCanvasIngame; //A reference to the ingame canvas.
+    [SerializeField] private GameObject referenceEvolutionParticle; //A reference to the evolution particle effects.
+    [SerializeField] private GameObject referenceQueueParticle; //A reference to the evolution particle effects.
 
     //Map related vars
     [SerializeField] private List<GameObject> referenceMapObjects; //A list of parent objects for each map.
@@ -102,6 +104,9 @@ public class GameManager : MonoBehaviour
             referenceCanvasPregame.enabled = true;
             referenceCanvasPostgame.enabled = false;
 
+            referenceEvolutionParticle.SetActive(false);
+            referenceQueueParticle.SetActive(false);
+
             //Update settings text
             referencePlayerCountText.text = "Player Count: " + settingPlayerCount;
             referenceMapText.text = "Map Type: " + referenceMapNames[settingMap];
@@ -144,6 +149,9 @@ public class GameManager : MonoBehaviour
             referenceCanvasPregame.enabled = false;
             referenceCanvasPostgame.enabled = false;
 
+            referenceEvolutionParticle.SetActive(true);
+            referenceQueueParticle.SetActive(true);
+
             //If there are only 8 values in the list left, add another bag to the end.
             if (gameQueue.Count <= 8)
             {
@@ -159,8 +167,8 @@ public class GameManager : MonoBehaviour
                 //If the queue item is a orb, then update the text to show its orbValue, otherwise hide the text.
                 if (gameQueue[i].gameObject.tag == "Orb")
                 {
-                    referenceQueueImages[i].transform.localScale = new Vector3(0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.2f), 0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.2f), 0);
-                    referenceQueueText[i].fontSize = 36f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 2f);
+                    referenceQueueImages[i].transform.localScale = new Vector3(0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.1f), 0.3f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 0.1f), 1);
+                    referenceQueueText[i].fontSize = 36f + ((float)gameQueue[i].GetComponent<ItemController>().orbValue * 1f);
                     referenceQueueText[i].enabled = true;
                     ItemController referenceItemController = gameQueue[i].GetComponent<ItemController>();
                     referenceQueueText[i].text = referenceItemController.orbValue.ToString();
@@ -168,7 +176,16 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     referenceQueueText[i].enabled = false;
-                    referenceQueueImages[i].transform.localScale = new Vector3(1,1,1);
+                }
+
+                //Set scales of powerups/junk items.
+                if (gameQueue[i].gameObject.tag == "Powerup")
+                {
+                    referenceQueueImages[i].transform.localScale = new Vector3(1, 1, 1);
+                }
+                if (gameQueue[i].gameObject.tag == "Junk")
+                {
+                    referenceQueueImages[i].transform.localScale = new Vector3(0.8f, 0.8f, 1);
                 }
             }
 
@@ -229,6 +246,9 @@ public class GameManager : MonoBehaviour
             referenceCanvasIngame.enabled = false;
             referenceCanvasPregame.enabled = false;
             referenceCanvasPostgame.enabled = true;
+
+            referenceEvolutionParticle.SetActive(false);
+            referenceQueueParticle.SetActive(false);
         }
 
     }
