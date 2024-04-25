@@ -134,10 +134,19 @@ public class ItemController : MonoBehaviour
                 //Add points to the player based on the merge value, and summon a floating text.
                 int points = orbValue * 2;
                 referenceOwnerScript.playerScore += points;
-                var referenceNewFloatingText = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceFloatingText, new Vector3(collision.transform.position.x, collision.transform.position.y, collision.transform.position.z - 2), Quaternion.identity) as GameObject;
+
+                //Summon a floating text at the merge location. (Old, Replaced with the version below.)
+                //var referenceNewFloatingText = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceFloatingText, new Vector3(collision.transform.position.x + Random.Range(-1.5f, 1.5f), collision.transform.position.y + Random.Range(-1.5f, 1.5f), collision.transform.position.z - 2), Quaternion.identity) as GameObject;
+                //referenceNewFloatingText.GetComponent<TextController>().referenceText.color = GetComponent<Renderer>().material.color;
+                //referenceNewFloatingText.GetComponent<TextController>().referenceText.SetText("+" + points);
+                //referenceNewFloatingText.transform.localScale = new Vector3(1 + (points * 0.25f), 1 + (points * 0.25f),1);
+
+                //Summon a floating text at the player's score location.
+                var referenceNewFloatingText = Instantiate(referenceGameManager.GetComponent<GameManager>().referenceFloatingText, new Vector3(referenceOwnerScript.playerUIPosX + Random.Range(-0.7f, 0.7f), referenceOwnerScript.playerUIPosY + Random.Range(0.4f, 0.6f), -2), Quaternion.identity) as GameObject;
                 referenceNewFloatingText.GetComponent<TextController>().referenceText.color = GetComponent<Renderer>().material.color;
                 referenceNewFloatingText.GetComponent<TextController>().referenceText.SetText("+" + points);
-                referenceNewFloatingText.transform.localScale = new Vector3(1 + (points * 0.25f), 1 + (points * 0.25f),1);
+                referenceNewFloatingText.GetComponent<TextController>().floatSpeed = 0.002f;
+                referenceNewFloatingText.transform.localScale = new Vector3(1.5f + (points * 0.05f), 1.5f + (points * 0.05f), 1);
 
                 //Carry over this orbs's values onto the next object.
                 ItemController referenceItemControlScript = referenceNewItem.GetComponent<ItemController>();
@@ -220,6 +229,7 @@ public class ItemController : MonoBehaviour
 
                 //Set the orb's new colour/style and owner ID.
                 referenceCollisionScript.itemOwner = this.itemOwner;
+                referenceCollisionScript.referenceOwnerScript = this.referenceOwnerScript;
                 collision.gameObject.GetComponent<SpriteRenderer>().sprite = this.paintStyle;
                 collision.gameObject.GetComponent<Renderer>().material.SetColor("_Color", this.GetComponent<Renderer>().material.color);
             }

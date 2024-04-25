@@ -16,9 +16,11 @@ public class PlayerController : MonoBehaviour
 
     public bool playerIsAlive;        //If the player is alive and still in the game.
     public int playerScore;           //The player's score.
+    public float playerScoreDisplay;    //The display value for the players score.
     public GameObject playerHeldItem; //The player's currently held item.
     public GameObject playerStartingItem; //The item the player starts with.
-    private float playerUIPos;         //The player's UI x position.
+    public float playerUIPosX;         //The player's UI x position.
+    public float playerUIPosY;         //The player's UI y position.
 
     private float dropCooldown = 0.5f * 120; //The cooldown before another item can be dropped.
     private float dropTimer = 8 * 120;   //The time left until the item will automatically drop.
@@ -59,8 +61,9 @@ public class PlayerController : MonoBehaviour
         //Disable the out of game effect so it is not visible.
         referenceOutOfGameEffect.SetActive(false);
 
-        //Save the starting x position for player UI elements.
-        playerUIPos = transform.position.x;
+        //Save the starting x and y position for player UI elements. Used for floating text.
+        playerUIPosX = transform.position.x;
+        playerUIPosY = -3.7f;
 
         //Get the first item
         CreateItem(false);
@@ -68,16 +71,23 @@ public class PlayerController : MonoBehaviour
         //Unchild UI so it dosent move with parent marker.
         referenceCanvas.transform.SetParent(null);
 
-        referenceScoreText.transform.position = new Vector3(playerUIPos, -3.7f, 0);
-        referenceNameText.transform.position = new Vector3(playerUIPos, -4.2f, 0);
-
+        referenceScoreText.transform.position = new Vector3(playerUIPosX, -3.7f, 0);
+        referenceNameText.transform.position = new Vector3(playerUIPosX, -4.2f, 0);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //Update the score text.
-        referenceScoreText.text = playerScore.ToString() + ".P";
+        //Update the score display text so it rises/lowers to the correct score.
+        if(playerScore > playerScoreDisplay)
+        {
+            playerScoreDisplay += 0.1f;
+        }
+        if (playerScore < playerScoreDisplay)
+        {
+            playerScoreDisplay -= 0.1f;
+        }
+        referenceScoreText.text = Mathf.Floor(playerScoreDisplay).ToString() + ".P";
 
         //Update the cooldown bar visuals.
         referenceCooldownBar.transform.localScale = new Vector3(dropTimer * 0.0015f, referenceCooldownBar.transform.localScale.y, referenceCooldownBar.transform.localScale.z);
